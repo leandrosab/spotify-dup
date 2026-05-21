@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>duplichecker</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <!-- Terminal-Fenster mit Mac-style Header (sticky am oberen Rand) -->
+    <div class="terminal">
+
+        <!-- ============= STICKY HEADER ============= -->
+        <div class="terminal-header">
+            <span class="dot dot-red"></span>
+            <span class="dot dot-yellow"></span>
+            <span class="dot dot-green"></span>
+            <span class="terminal-title">duplichecker -- powershell</span>
+            <!-- Top-Level-Modus: Formular-UX vs. Shell-Eingabe -->
+            <div class="top-modes">
+                <button class="top-mode-btn active" data-topmode="ux">UX</button>
+                <button class="top-mode-btn" data-topmode="term">Terminal</button>
+            </div>
+        </div>
+
+        <!-- ============= UX-MODUS (Formular + Tabs) ============= -->
+        <div id="ux-section" class="top-section active">
+        <div class="terminal-body">
+            <pre class="banner">
+================================================================
+   ___                      ___
+  / __| ___  _ _   __ _    |   \ _  _  _ __
+  \__ \/ _ \| ' \ / _` |   | |) | || || '_ \
+  |___/\___/|_||_|\__, |   |___/ \_,_|| .__/
+                  |___/                |_|
+
+       Song Duplikat-Checker  |  Modul 122  |  PowerShell
+================================================================</pre>
+
+            <p class="info"><span class="prompt">duplichecker$</span> <span class="cmd">help</span></p>
+            <p class="hint">Waehle eine Quelle und starte die Suche:</p>
+
+            <!-- Tabs zum Umschalten zwischen CSV und Spotify -->
+            <div class="tabs">
+                <button class="tab active" data-mode="csv">[1] CSV-Datei</button>
+                <button class="tab" data-mode="spotify">[2] Spotify-Playlist</button>
+            </div>
+
+            <!-- Modus 1: CSV-Upload -->
+            <section id="csv-mode" class="mode active">
+                <div class="prompt-line">
+                    <span class="prompt">duplichecker$</span>
+                    <span class="cmd">load --from csv</span>
+                </div>
+                <form id="csv-form">
+                    <label class="field">
+                        <span class="field-label">CSV-Datei:</span>
+                        <input type="file" id="csv-file" accept=".csv" required>
+                    </label>
+                    <label class="field-checkbox">
+                        <input type="checkbox" id="csv-album">
+                        <span>Album mitvergleichen</span>
+                    </label>
+                    <button type="submit" class="run-btn">&gt; run</button>
+                </form>
+            </section>
+
+            <!-- Modus 2: Spotify-Playlist -->
+            <section id="spotify-mode" class="mode">
+                <div class="prompt-line">
+                    <span class="prompt">duplichecker$</span>
+                    <span class="cmd">load --from spotify</span>
+                </div>
+
+                <!-- Status: Credentials & Login -->
+                <p class="cfg-status">
+                    <span class="cfg-badge cfg-unknown" id="cfg-badge">checking...</span>
+                </p>
+
+                <!-- Aufklappbarer Settings-Bereich fuer Client ID / Secret -->
+                <details id="cfg-details" class="settings">
+                    <summary>&gt; spotify credentials einrichten / aendern</summary>
+                    <div class="settings-body">
+                        <p class="hint">
+                            Hole dir Client ID + Secret unter
+                            <a href="https://developer.spotify.com/dashboard"
+                               target="_blank" rel="noopener">developer.spotify.com/dashboard</a>.
+                            Wichtig: bei <strong>Redirect URIs</strong>
+                            <code>http://127.0.0.1:8888/callback</code> eintragen
+                            (NICHT <code>localhost</code> &mdash; das lehnt Spotify ab).
+                        </p>
+                        <label class="field">
+                            <span class="field-label">Client ID:</span>
+                            <input type="text" id="cfg-client-id" autocomplete="off">
+                        </label>
+                        <label class="field">
+                            <span class="field-label">Client Secret:</span>
+                            <input type="password" id="cfg-client-secret" autocomplete="off">
+                        </label>
+                        <button type="button" id="cfg-save" class="run-btn">&gt; save</button>
+                    </div>
+                </details>
+
+                <!-- Sub-Tabs: eigene Playlists vs. URL -->
+                <div class="sub-tabs">
+                    <button class="sub-tab active" data-submode="my">[a] meine playlists</button>
+                    <button class="sub-tab" data-submode="url">[b] per URL</button>
+                </div>
+
+                <!-- Sub-Modus: eigene Playlists -->
+                <div id="my-submode" class="submode active">
+                    <!-- Sicht: noch nicht eingeloggt -->
+                    <div id="my-disconnected">
+                        <p class="hint">
+                            Logge dich mit deinem Spotify-Account ein, um deine eigenen
+                            Playlists zu sehen. Es oeffnet sich der Browser zum Anmelden.
+                        </p>
+                        <button type="button" id="btn-connect" class="run-btn">&gt; connect to spotify</button>
+                    </div>
+                    <!-- Sicht: eingeloggt, Playlists waehlbar -->
+                    <div id="my-connected" style="display:none">
+                        <div class="prompt-line">
+                            <span class="prompt">duplichecker$</span>
+                            <span class="cmd">my-playlists</span>
+                        </div>
+                        <ul id="playlist-list" class="playlist-list"></ul>
+                        <label class="field-checkbox">
+                            <input type="checkbox" id="my-album">
+                            <span>Album mitvergleichen</span>
+                        </label>
+                        <p class="hint">Klicke auf eine Playlist, um sie zu pruefen.</p>
+                    </div>
+                </div>
+
+                <!-- Sub-Modus: per URL (oeffentliche Playlist) -->
+                <div id="url-submode" class="submode">
+                    <form id="spotify-form">
+                        <label class="field">
+                            <span class="field-label">Playlist-URL oder ID:</span>
+                            <input type="text" id="spotify-url"
+                                   placeholder="https://open.spotify.com/playlist/...">
+                        </label>
+                        <label class="field-checkbox">
+                            <input type="checkbox" id="spotify-album">
+                            <span>Album mitvergleichen</span>
+                        </label>
+                        <button type="submit" class="run-btn">&gt; run</button>
+                    </form>
+                    <p class="hint">Die Playlist muss <strong>oeffentlich</strong> sein.</p>
+                </div>
+            </section>
+
+            <!-- Hier landen Status-Meldungen + Resultate (UX-Modus) -->
+            <div id="output" class="output"></div>
+        </div>
+        </div><!-- /ux-section -->
+
+        <!-- ============= TERMINAL-MODUS (Shell-Eingabe) ============= -->
+        <div id="term-section" class="top-section">
+        <div class="terminal-body term-body">
+            <pre class="banner">
+================================================================
+   ___                      ___
+  / __| ___  _ _   __ _    |   \ _  _  _ __
+  \__ \/ _ \| ' \ / _` |   | |) | || || '_ \
+  |___/\___/|_||_|\__, |   |___/ \_,_|| .__/
+                  |___/                |_|
+
+       Tippe 'help' fuer eine Liste der Befehle.
+================================================================</pre>
+            <!-- Hierhin werden Befehle und Ausgaben gerendert -->
+            <div id="term-output" class="term-output"></div>
+            <!-- Eingabe-Zeile -->
+            <form id="term-form" class="term-input-line">
+                <span class="prompt">duplichecker$</span>
+                <input type="text" id="term-input" autocomplete="off"
+                       spellcheck="false" autocapitalize="off" />
+            </form>
+        </div>
+        </div><!-- /term-section -->
+
+    </div>
+
+    <!-- Versteckter File-Picker fuer den 'csv'-Befehl im Terminal -->
+    <input type="file" id="term-file-picker" accept=".csv" style="display:none">
+
+    <script src="/app.js"></script>
+</body>
+</html>
