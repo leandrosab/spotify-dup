@@ -95,20 +95,20 @@ sequenceDiagram
     participant Browser
     participant Spotify
 
-    User->>CLI: spotify, waehlt 1
-    CLI->>CLI: Random State generieren
+    User->>CLI: tippt spotify und waehlt 1
+    Note over CLI: Random State generieren
     CLI->>Listener: starten
     CLI->>Browser: oeffnet spotify.com/authorize
     User->>Browser: einloggen und zustimmen
     Browser->>Spotify: Login
     Spotify->>Browser: Redirect zu 127.0.0.1 Port 8888
     Browser->>Listener: GET /callback mit code und state
-    Listener->>Listener: State pruefen, CSRF-Check
+    Note over Listener: State pruefen<br/>CSRF-Check
     Listener->>Browser: HTML Login erfolgreich
     Listener->>CLI: Authorization Code
     CLI->>Spotify: POST /api/token mit Code und Basic Auth
     Spotify->>CLI: access_token und refresh_token
-    CLI->>CLI: Tokens in config.json speichern
+    Note over CLI: Tokens in config.json speichern
     CLI->>User: Login erfolgreich
 ```
 
