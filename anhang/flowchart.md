@@ -35,18 +35,18 @@ Der einfachste Pfad: Datei einlesen, prüfen, gruppieren, anzeigen.
 
 ```mermaid
 flowchart TD
-    Start([User tippt 'csv']) --> Path[Pfad eingeben]
-    Path --> Check{Datei + Spalten OK?}
+    Begin([User tippt csv]) --> Path[Pfad eingeben]
+    Path --> Check{Datei und Spalten OK}
     Check -->|nein| Err[Fehlermeldung]
     Check -->|ja| Import[Import-SongCsv]
-    Import --> Album{Album mitvergleichen?}
+    Import --> Album{Album mitvergleichen}
     Album --> Find[Find-Duplicates]
     Find --> Show[Tabelle anzeigen]
-    Show --> Export{Export?}
-    Export -->|ja| Save[CSV + JSON speichern]
-    Export -->|nein| End([Ende])
-    Save --> End
-    Err --> End
+    Show --> ExportQ{Export}
+    ExportQ -->|ja| Save[CSV und JSON speichern]
+    ExportQ -->|nein| Done([Ende])
+    Save --> Done
+    Err --> Done
 ```
 
 ---
@@ -91,25 +91,25 @@ sequenceDiagram
     autonumber
     actor User
     participant CLI as duplichecker
-    participant Listener as TcpListener<br>127.0.0.1:8888
+    participant Listener as TcpListener Port 8888
     participant Browser
     participant Spotify
 
-    User->>CLI: spotify -> 1
+    User->>CLI: spotify, waehlt 1
     CLI->>CLI: Random State generieren
     CLI->>Listener: starten
-    CLI->>Browser: spotify.com/authorize<br>(client_id, scope, state)
-    User->>Browser: einloggen + zustimmen
+    CLI->>Browser: oeffnet spotify.com/authorize
+    User->>Browser: einloggen und zustimmen
     Browser->>Spotify: Login
-    Spotify->>Browser: Redirect zu 127.0.0.1:8888/callback
-    Browser->>Listener: GET /callback?code=...&state=...
-    Listener->>Listener: State pruefen (CSRF)
-    Listener->>Browser: HTML "Login erfolgreich"
+    Spotify->>Browser: Redirect zu 127.0.0.1 Port 8888
+    Browser->>Listener: GET /callback mit code und state
+    Listener->>Listener: State pruefen, CSRF-Check
+    Listener->>Browser: HTML Login erfolgreich
     Listener->>CLI: Authorization Code
-    CLI->>Spotify: POST /api/token (Code + Basic Auth)
-    Spotify->>CLI: access_token + refresh_token
-    CLI->>CLI: Tokens speichern
-    CLI->>User: "Login erfolgreich"
+    CLI->>Spotify: POST /api/token mit Code und Basic Auth
+    Spotify->>CLI: access_token und refresh_token
+    CLI->>CLI: Tokens in config.json speichern
+    CLI->>User: Login erfolgreich
 ```
 
 ---
@@ -155,12 +155,12 @@ sequenceDiagram
     participant Server as PowerShell Server
     participant Mod as Module
 
-    User->>Browser: oeffnet localhost:8080
-    Browser->>Server: GET / (index.html)
-    Server->>Browser: HTML + CSS + JS
-    User->>Browser: waehlt CSV, klickt 'run'
-    Browser->>Server: POST /api/check (CSV-Body)
-    Server->>Mod: Import-SongCsv + Find-Duplicates
+    User->>Browser: oeffnet localhost Port 8080
+    Browser->>Server: GET / liefert index.html
+    Server->>Browser: HTML, CSS, JS
+    User->>Browser: waehlt CSV, klickt run
+    Browser->>Server: POST /api/check mit CSV-Body
+    Server->>Mod: Import-SongCsv und Find-Duplicates
     Mod->>Server: Duplikat-Liste
     Server->>Browser: JSON Response
     Browser->>User: Tabelle anzeigen
