@@ -84,33 +84,38 @@ flowchart TD
 
 ## 4. OAuth-2.0-Login (Sequenz)
 
-Der genaue Ablauf zwischen vier Akteuren: User, PowerShell-Skript, lokaler `TcpListener` (für den Callback) und Spotify.
+**Die vier Akteure:**
+
+| Akteur | Rolle |
+|---|---|
+| **User** | Du, sitzt vor dem Computer |
+| **duplichecker** | Unser PowerShell-Tool |
+| **Browser** | Vermittelt zwischen User und Spotify |
+| **Spotify** | Hat die Daten, gibt sie nur mit Erlaubnis raus |
+
+**Die Idee in einem Satz:** duplichecker schickt dich kurz zu Spotify, du sagst dort „okay, das Tool darf meine Playlists lesen", und Spotify gibt dem Tool danach einen Schlüssel (Token) zurück, mit dem es deine Daten holen kann.
 
 ```mermaid
 sequenceDiagram
     autonumber
     actor User
-    participant CLI as duplichecker
-    participant Listener as TcpListener Port 8888
+    participant Tool as duplichecker
     participant Browser
     participant Spotify
 
-    User->>CLI: tippt spotify und waehlt 1
-    Note over CLI: Random State generieren
-    CLI->>Listener: starten
-    CLI->>Browser: oeffnet spotify.com/authorize
-    User->>Browser: einloggen und zustimmen
-    Browser->>Spotify: Login
-    Spotify->>Browser: Redirect zu 127.0.0.1 Port 8888
-    Browser->>Listener: GET /callback mit code und state
-    Note over Listener: State pruefen<br/>CSRF-Check
-    Listener->>Browser: HTML Login erfolgreich
-    Listener->>CLI: Authorization Code
-    CLI->>Spotify: POST /api/token mit Code und Basic Auth
-    Spotify->>CLI: access_token und refresh_token
-    Note over CLI: Tokens in config.json speichern
-    CLI->>User: Login erfolgreich
+    User->>Tool: moechte einloggen
+    Tool->>Browser: oeffnet Spotify-Login-Seite
+    User->>Browser: meldet sich an und erlaubt Zugriff
+    Browser->>Spotify: User-Login durchfuehren
+    Spotify->>Browser: schickt einen Code zurueck
+    Browser->>Tool: Code weiterleiten
+    Tool->>Spotify: Code gegen Token tauschen
+    Spotify->>Tool: Access Token und Refresh Token
+    Note over Tool: Token speichern
+    Tool->>User: Login erfolgreich
 ```
+
+**Warum ist das so umständlich?** Damit der User sein Spotify-Passwort **nie** beim Tool eingibt. Das Passwort bleibt zwischen User und Spotify. Das Tool bekommt nur einen Token — eine Art Stempelkarte, die Spotify jederzeit zurückziehen kann. Standard-Schutz seit ca. 2012.
 
 ---
 
