@@ -57,14 +57,14 @@ Inklusive OAuth-Login und Auswahl-Menü (1 = eigene Playlist, 2 = öffentliche U
 
 ```mermaid
 flowchart TD
-    Start([User tippt 'spotify']) --> Cfg{config.json da?}
-    Cfg -->|nein| Setup[Client ID + Secret eingeben]
+    Begin([User tippt spotify]) --> Cfg{config.json vorhanden}
+    Cfg -->|nein| Setup[Client ID und Secret eingeben]
     Cfg -->|ja| Choice[Quelle waehlen]
     Setup --> Choice
 
-    Choice --> Q{1 oder 2?}
-    Q -->|1: eigene| Token{gueltiger Token?}
-    Q -->|2: URL| Url[URL eingeben]
+    Choice --> Q{Option 1 oder 2}
+    Q -->|1 eigene| Token{Token gueltig}
+    Q -->|2 URL| Url[URL eingeben]
 
     Token -->|nein| Login[OAuth Browser-Login]
     Login --> Mine
@@ -76,8 +76,8 @@ flowchart TD
 
     Fetch --> Find[Find-Duplicates]
     FetchPublic --> Find
-    Find --> Show[Tabelle + Hinweis<br>manuell loeschen]
-    Show --> End([Ende])
+    Find --> Show[Tabelle anzeigen]
+    Show --> Done([Ende])
 ```
 
 ---
@@ -152,17 +152,17 @@ sequenceDiagram
     autonumber
     actor User
     participant Browser
-    participant Server as PowerShell Server
-    participant Mod as Module
+    participant Server
+    participant Modul
 
-    User->>Browser: oeffnet localhost Port 8080
-    Browser->>Server: GET / liefert index.html
-    Server->>Browser: HTML, CSS, JS
-    User->>Browser: waehlt CSV, klickt run
-    Browser->>Server: POST /api/check mit CSV-Body
-    Server->>Mod: Import-SongCsv und Find-Duplicates
-    Mod->>Server: Duplikat-Liste
-    Server->>Browser: JSON Response
+    User->>Browser: oeffnet die Webseite
+    Browser->>Server: Anfrage Startseite
+    Server->>Browser: HTML CSS und JS senden
+    User->>Browser: waehlt CSV Datei aus
+    Browser->>Server: sendet CSV als POST
+    Server->>Modul: pruefe auf Duplikate
+    Modul->>Server: Liste mit Duplikaten
+    Server->>Browser: Antwort als JSON
     Browser->>User: Tabelle anzeigen
 ```
 
