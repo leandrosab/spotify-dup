@@ -35,18 +35,18 @@ Der einfachste Pfad: Datei einlesen, prüfen, gruppieren, anzeigen.
 
 ```mermaid
 flowchart TD
-    Begin([User tippt csv]) --> Path[Pfad eingeben]
-    Path --> Check{Datei und Spalten OK}
-    Check -->|nein| Err[Fehlermeldung]
-    Check -->|ja| Import[Import-SongCsv]
-    Import --> Album{Album mitvergleichen}
-    Album --> Find[Find-Duplicates]
-    Find --> Show[Tabelle anzeigen]
-    Show --> ExportQ{Export}
-    ExportQ -->|ja| Save[CSV und JSON speichern]
-    ExportQ -->|nein| Done([Ende])
-    Save --> Done
-    Err --> Done
+    a([User tippt csv]) --> b[Pfad eingeben]
+    b --> c{Datei OK}
+    c -->|nein| d[Fehlermeldung]
+    c -->|ja| e[Datei einlesen]
+    e --> f{Album mitvergleichen}
+    f --> g[Duplikate finden]
+    g --> h[Tabelle anzeigen]
+    h --> i{Exportieren}
+    i -->|ja| j[CSV und JSON speichern]
+    i -->|nein| k([Ende])
+    j --> k
+    d --> k
 ```
 
 ---
@@ -125,14 +125,14 @@ Das Herz des Tools: aus einer rohen Songliste werden gruppierte Duplikate.
 
 ```mermaid
 flowchart LR
-    A[Liste von Songs] --> B[fuer jeden Song:<br>Title + Artist normalisieren]
-    B --> C[Schluessel bilden]
-    C --> D[Group-Object nach Key]
-    D --> E{Count > 1?}
-    E -->|nein| F[verwerfen]
-    E -->|ja| G[als Duplikat-Gruppe<br>aufnehmen]
-    G --> H[nach Count absteigend<br>sortieren]
-    H --> I[Duplikat-Gruppen]
+    a[Liste von Songs] --> b[Title und Artist normalisieren]
+    b --> c[Schluessel bilden]
+    c --> d[Group-Object nach Key]
+    d --> e{Anzahl groesser als 1}
+    e -->|nein| f[verwerfen]
+    e -->|ja| g[Duplikat-Gruppe aufnehmen]
+    g --> h[nach Anzahl sortieren]
+    h --> i[Duplikat-Gruppen]
 ```
 
 **Beispiel-Durchlauf** (ohne Album-Vergleich):

@@ -1,10 +1,10 @@
 {
     "Spotify":  {
-                    "TokenExpiry":  "2026-05-20T09:49:14.6192331+02:00",
+                    "TokenExpiry":  "2026-06-01T15:50:04.9762516+02:00",
                     "ClientId":  "56401b38ce1a495f9d50f4130dfafd10",
-                    "AccessToken":  "BQCSZvN0jY5QXcRy3yVMdRNFqSWWjOeVmZKMWKEQRYUS7wXMaI-aFDtGlx12g3mIQsxAt6VmIQ_vz5z2ofspcvlvgZ8eGwTqRPoMNI_v-XxgxjMr-_ELEv6m1PjarRpgm-eyy2AQf9QPCq4uBcxlVldjjlRAEguTiZdcQekLFAB841QtnsgXwhtl92gKmpJ6wIVxXseIzkLaNU3mwgS-t8kfOhxi_PmE_eTszkPF0OL9sJHmolCmYy0T6GxgoMRENGjLLFJXT_O2O8p1w6_tfGudWduQ4B1fJleXcrzS0zCDg2HrZWDvRBvcQwQ_NC0Wg4A6UyU7",
+                    "AccessToken":  "BQBEuxHaq4sifJTjQ-89BLHBUFc9rTZUnXUGEr0WzgJZGLyrDLuLQSpXOKGp1_Yk39gHbEgTiuJCBMaXGGEX7TtozBa-ju3AtisQriqUW64-RkIUDmbzpjr8NJKnWEUSTB1QFcO150-SYyus-r0rq4vhKOJk2nlo361je6aXFg8ZxIyzTyMqw-GjX5atS8qURi88_eRyWpnlGeVWpEucpcc2l8DeWoJVO6zR2-HjdWQhl8zQazqbWc_KLb_MfBhxYXPbx1JZ-kZCeA",
                     "ClientSecret":  "3b5e1faf0d95430591302c9e88286fc2",
-                    "RefreshToken":  "AQCHASoqBnzwkdhZi6e9JlFT6mXB-k-q2BL25MH3NI9MDliPdhS5hRR030WfBgaFn1ZHQ8or_1n4tM8EyI-KXMxII5zI-i36TY0aLKZJKBPIoEHjCQmvWRgaBtqBs177EcI",
-                    "Scope":  "playlist-read-private playlist-read-collaborative playlist-modify-private playlist-modify-public user-read-private"
+                    "RefreshToken":  "AQAj9VcUlHZxWD3N4Eai8vW-z6PDKni5vHdnPpJ_-VhYASNbTHKGePNSa8Y7aYpRkSx6yYl1FY64TbitMekTw95c3P8-0MgAZemDHlRgL4aYpKVF9wRKCSO4YuTR46quteo",
+                    "Scope":  "playlist-read-private playlist-read-collaborative user-read-private"
                 }
 }
